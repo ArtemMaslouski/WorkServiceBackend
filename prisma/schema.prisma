@@ -20,3 +20,9 @@ model Vacancy {
   Company  String
   City     String
 }
+
+model User {
+  id       Int    @id @default(autoincrement())
+  Login    String @unique
+  Password String
+}

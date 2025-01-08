@@ -1,8 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserDTO, userRole } from '../DTO/UserDTO';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,7 @@ export class AuthService {
     });
   }
 
-  async validateUser(userDto: UserDTO) {
+  async validateUser(userDto: UserDTO, response: Response) {
     const { Login, Password, Role } = userDto;
     const user = await this.prisma.user.findUnique({
       where: {
@@ -55,6 +56,20 @@ export class AuthService {
       throw new UnauthorizedException('Неверный пароль');
     }
 
+    const token = await this.createToken(user);
+    response.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 30 * 60 * 1000,
+    });
+
+    console.log('Set-Cookie header:', response.getHeader('Set-Cookie'));
+
+    return token;
+  }
+
+  async createToken(user) {
     const payload = { sub: user.id, Login: user.Login, roles: user.Role };
     return {
       access_token: this.jwtService.sign(payload),

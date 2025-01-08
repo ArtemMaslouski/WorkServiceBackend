@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 

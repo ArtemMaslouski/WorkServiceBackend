@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Vacancy } from '@prisma/client';
 import { PrismaService } from './prisma.service';
+import { VacancyDTO } from './DTO/VacancyDTO';
 
 @Injectable()
 export class AppService {
@@ -9,12 +10,8 @@ export class AppService {
     return this.prisma.vacancy.findMany();
   }
 
-  async createVacancy(
-    Position: string,
-    Salary: string,
-    Company: string,
-    City: string,
-  ): Promise<Vacancy> {
+  async createVacancy(vacancyDTO: VacancyDTO): Promise<Vacancy> {
+    const { Position, Salary, Company, City } = vacancyDTO;
     return this.prisma.vacancy.create({
       data: {
         Position,

@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
+import { VacancyDTO } from './DTO/VacancyDTO';
 
 @Controller('vacancies')
 export class AppController {
@@ -10,12 +11,7 @@ export class AppController {
     return this.appService.getVacancies();
   }
   @Post('post')
-  createVacancy(
-    @Body('Position') Position: string,
-    @Body('Salary') Salary: string,
-    @Body('Company') Company: string,
-    @Body('City') City: string,
-  ) {
-    return this.appService.createVacancy(Position, Salary, Company, City);
+  createVacancy(@Body() vacancyDTO: VacancyDTO) {
+    return this.appService.createVacancy(vacancyDTO);
   }
 }
